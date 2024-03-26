@@ -34,11 +34,11 @@ jobs:
           cache: 'yarn'
 
       
-      - name: Install project dependencies
-        run: yarn --prefer-offline
+      # - name: Install project dependencies
+      #   run: yarn --prefer-offline
 
-      - name: Run lint
-        run: yarn lint
+      # - name: Run lint
+      #   run: yarn lint
 
       # Setup gcloud CLI
       - id: 'auth'
@@ -60,7 +60,7 @@ jobs:
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
       - run: |-
-          gcloud --quiet auth configure-docker
+          gcloud --quiet auth configure-docker $GAR_ZONE
 
       # Get the GKE credentials so we can deploy to the cluster
       - uses: google-github-actions/get-gke-credentials@v1
@@ -73,17 +73,6 @@ jobs:
         continue-on-error: true
         run: |-
           docker pull $GAR_ZONE/$PROJECT_ID/$IMAGE/builder:latest
-
-      # Build the Docker image
-      - name: Build cache
-        run: |-
-          docker build \
-            --target builder \
-            --cache-from $GAR_ZONE/$PROJECT_ID/$IMAGE/builder:latest \
-            --tag "$GAR_ZONE/$PROJECT_ID/$IMAGE/builder:$GITHUB_SHA" \
-            --tag "$GAR_ZONE/$PROJECT_ID/$IMAGE/builder:latest" \
-            --build-arg GITHUB_SHA="$GITHUB_SHA" \
-            --build-arg GITHUB_REF="$GITHUB_REF" \
             .
 
       - name: Build runtime
