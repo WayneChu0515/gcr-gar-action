@@ -89,8 +89,8 @@ jobs:
       - name: Publish
         run: |-
           gcloud --quiet auth configure-docker $GAR_ZONE
-          docker build -t $GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE:latest .
-          docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE"
+          docker build -t $GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/node:18 .
+          docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/node:18"
 
       # Set up kustomize
       - name: Set up Kustomize
