@@ -64,16 +64,16 @@ jobs:
       - name: try pull builder cache
         continue-on-error: true
         run: |-
-          docker pull gcr.io/$PROJECT_ID/$IMAGE/builder:latest
+          docker pull asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:latest
 
       # Build the Docker image
       - name: Build cache
         run: |-
           docker build \
             --target builder \
-            --cache-from gcr.io/$PROJECT_ID/$IMAGE/builder:latest \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE/builder:$GITHUB_SHA" \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE/builder:latest" \
+            --cache-from asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:latest \
+            --tag "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:$GITHUB_SHA" \
+            --tag "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:latest" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
@@ -81,9 +81,9 @@ jobs:
       - name: Build runtime
         run: |-
           docker build \
-            --cache-from gcr.io/$PROJECT_ID/$IMAGE/builder:latest \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE:dev" \
+            --cache-from asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:latest \
+            --tag "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+            --tag "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE:dev" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
@@ -91,8 +91,8 @@ jobs:
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:dev"
+          docker push "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+          docker push "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE:dev"
 
       # Set up kustomize
       - name: Set up Kustomize
@@ -103,13 +103,13 @@ jobs:
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
-          ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+          ./kustomize edit set image asia-east1-docker.pkg.dev/PROJECT_ID/IMAGE:TAG=asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE:$GITHUB_SHA
           ./kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/$DEPLOYMENT_NAME
           kubectl get services -o wide
 
       - name: Publish cache
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE/builder:latest"
-          docker push "gcr.io/$PROJECT_ID/$IMAGE/builder:$GITHUB_SHA"
+          docker push "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:latest"
+          docker push "asia-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE/builder:$GITHUB_SHA"
 
