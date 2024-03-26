@@ -1,7 +1,7 @@
 
 # build stage
 # FROM node:16.17.1 as builder
-FROM gcr.io/k8s-simpos/node:16.17.1 as builder
+FROM node:18 as builder
 
 WORKDIR  /app
 COPY package.json yarn.lock ./
