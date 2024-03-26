@@ -7,6 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
   GKE_CLUSTER: cluster-1
   GKE_ZONE: asia-east1-a
   DEPLOYMENT_NAME: gcr-gar-svc-app # TODO: update to deployment name
@@ -42,7 +43,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+          credentials_json: '${{ env.GKE_SA_KEY }}'
 
       - uses: google-github-actions/setup-gcloud@v1
         with:
