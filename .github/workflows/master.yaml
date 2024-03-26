@@ -88,6 +88,7 @@ jobs:
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
+          gcloud --quiet auth configure-docker $GAR_ZONE
           docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
           docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE:dev"
 
