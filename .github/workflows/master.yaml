@@ -80,8 +80,7 @@ jobs:
         run: |-
           docker build \
             --cache-from $GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE/builder:latest \
-            --tag "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE:$GITHUB_SHA" \
-            --tag "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE:dev" \
+            --tag "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
@@ -90,8 +89,7 @@ jobs:
       - name: Publish
         run: |-
           gcloud --quiet auth configure-docker $GAR_ZONE
-          docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE:$GITHUB_SHA"
-          docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE:dev"
+          docker push "$GAR_ZONE/$PROJECT_ID/$IMAGE_FOLDER/$IMAGE"
 
       # Set up kustomize
       - name: Set up Kustomize
